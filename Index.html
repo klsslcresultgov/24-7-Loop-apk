@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ml">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -31,7 +31,7 @@
 
         header {
             text-align: center;
-            margin-bottom: 30px;
+            margin-bottom: 20px;
             padding: 10px 0;
             position: relative;
         }
@@ -52,7 +52,6 @@
             margin-top: 5px;
         }
 
-        /* Admin Login Trigger Button */
         .admin-trigger {
             position: absolute;
             top: 10px;
@@ -64,7 +63,97 @@
             font-size: 12px;
         }
 
+        /* Search Box Styles */
+        .search-container {
+            max-width: 500px;
+            margin: 0 auto 25px auto;
+            padding: 0 10px;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 12px 20px;
+            background-color: var(--card-bg);
+            border: 1px solid #333;
+            border-radius: 30px;
+            color: white;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+
+        .search-input:focus {
+            border-color: var(--primary-color);
+            outline: none;
+            box-shadow: 0 0 10px rgba(229, 9, 20, 0.2);
+        }
+
+        /* Hero Banner Styles */
+        .hero-banner {
+            display: none;
+            max-width: 1200px;
+            margin: 0 auto 30px auto;
+            height: 350px;
+            border-radius: 16px;
+            overflow: hidden;
+            position: relative;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.6);
+        }
+
+        .hero-bg {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .hero-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to top, rgba(15,15,15,1) 10%, rgba(15,15,15,0.6) 50%, rgba(0,0,0,0.1) 100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            padding: 30px;
+        }
+
+        .hero-title {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 5px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
+        }
+
+        .hero-meta {
+            font-size: 13px;
+            color: #ffc107;
+            margin-bottom: 15px;
+            font-weight: 600;
+            }
+
+        .hero-btn {
+            align-self: flex-start;
+            background-color: var(--primary-color);
+            color: white;
+            text-decoration: none;
+            padding: 12px 25px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 14px;
+            box-shadow: 0 4px 15px rgba(229, 9, 20, 0.4);
+        }
+
         /* Movie Grid */
+        .section-title {
+            max-width: 1200px;
+            margin: 0 auto 15px auto;
+            font-size: 18px;
+            font-weight: 600;
+            padding-left: 5px;
+            border-left: 4px solid var(--primary-color);
+        }
+
         .movie-container {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
@@ -151,7 +240,6 @@
             border-radius: 8px;
             font-weight: 600;
             font-size: 13px;
-            letter-spacing: 0.5px;
         }
 
         .status-msg {
@@ -162,7 +250,7 @@
             padding: 40px 0;
         }
 
-        /* Admin Panel Drawer */
+        /* Admin Panel Form */
         .admin-panel {
             display: none;
             max-width: 500px;
@@ -202,9 +290,27 @@
             font-size: 14px;
         }
 
-        .form-group input:focus {
-            border-color: var(--primary-color);
-            outline: none;
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 15px 0;
+            background: #252525;
+            padding: 10px;
+            border-radius: 8px;
+        }
+
+        .checkbox-group input {
+            width: auto;
+            transform: scale(1.3);
+            cursor: pointer;
+        }
+
+        .checkbox-group label {
+            display: inline;
+            color: #ffc107;
+            font-weight: 600;
+            cursor: pointer;
         }
 
         .submit-btn {
@@ -217,11 +323,12 @@
             font-weight: 600;
             cursor: pointer;
             font-size: 14px;
-            margin-top: 10px;
         }
 
-        .submit-btn:active {
-            background-color: #218838;
+        @media (max-width: 600px) {
+            .hero-banner { height: 220px; }
+            .hero-title { font-size: 20px; }
+            .hero-btn { padding: 8px 16px; font-size: 12px; }
         }
     </style>
 </head>
@@ -229,39 +336,51 @@
 
     <header>
         <h1>24/7 <span>Loop</span></h1>
-        <p>അൺലിമിറ്റഡ് മൂവി ഡൗൺലോഡ്സ് ഒറ്റ ക്ലിക്കിൽ</p>
+        <p>Unlimited Movie Downloads In One Click</p>
         <button class="admin-trigger" onclick="checkAdminPassword()">⚫</button>
     </header>
+
+    <div class="search-container">
+        <input type="text" id="searchBox" class="search-input" placeholder="Search movies by name..." oninput="searchMovies()">
+    </div>
 
     <div class="admin-panel" id="adminConsole">
         <h2>Admin Movie Uploader</h2>
         <div class="form-group">
-            <label>സിനിമയുടെ പേര് (Movie Title)</label>
-            <input type="text" id="movieTitle" placeholder="Eg: Premalu">
+            <label>Movie Title</label>
+            <input type="text" id="movieTitle" placeholder="Eg: Aavesham">
         </div>
         <div class="form-group">
-            <label>കാറ്റഗറി (Category)</label>
-            <input type="text" id="movieCat" placeholder="Eg: Comedy | Romance">
+            <label>Category</label>
+            <input type="text" id="movieCat" placeholder="Eg: Action | Comedy">
         </div>
         <div class="form-group">
-            <label>റേറ്റിംഗ് (Rating)</label>
-            <input type="text" id="movieRating" placeholder="Eg: 4.5">
+            <label>Rating</label>
+            <input type="text" id="movieRating" placeholder="Eg: 4.8">
         </div>
         <div class="form-group">
-            <label>പോസ്റ്റർ ലിങ്ക് (Poster Image URL)</label>
+            <label>Poster Image URL</label>
             <input type="text" id="movieImg" placeholder="https://i.postimg.cc/...">
         </div>
         <div class="form-group">
-            <label>ഡൗൺലോഡ് ലിങ്ക് (Download URL)</label>
-            <input type="text" id="movieLink" placeholder="Google Drive / Terabox Link">
+            <label>Download URL</label>
+            <input type="text" id="movieLink" placeholder="Drive / Terabox Link">
         </div>
+        
+        <div class="checkbox-group">
+            <input type="checkbox" id="isHeroBanner">
+            <label for="isHeroBanner">Make this Hero Banner (Top Banner)</label>
+        </div>
+        
         <button class="submit-btn" onclick="uploadMovie()">Upload Movie</button>
     </div>
 
-    <hr style="border: 0; height: 1px; background: #333; margin: 20px 0;">
+    <div class="hero-banner" id="heroSection"></div>
+
+    <div class="section-title">Latest Movies</div>
 
     <div class="movie-container" id="movie-list">
-        <div class="status-msg">സിнимаകൾ ലോഡ് ചെയ്യുന്നു...</div>
+        <div class="status-msg">Loading Movies...</div>
     </div>
 
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
@@ -282,83 +401,143 @@
         firebase.initializeApp(firebaseConfig);
         const database = firebase.database();
 
-        const movieListContainer = document.getElementById('movie-list');
+        let allMovies = [];
 
-        // ഫയർബേസിൽ നിന്ന് സിനിമകൾ എടുത്തു കാണിക്കുന്നു
         database.ref('movies').on('value', (snapshot) => {
-            movieListContainer.innerHTML = ''; 
-            const movies = snapshot.val();
+            const moviesData = snapshot.val();
+            allMovies = [];
+            let heroMovie = null;
 
-            if (movies) {
-                Object.keys(movies).forEach((key) => {
-                    const movie = movies[key];
+            if (moviesData) {
+                Object.keys(moviesData).forEach((key) => {
+                    const m = moviesData[key];
+                    m.id = key;
+                    allMovies.push(m);
                     
-                    const movieCard = document.createElement('div');
-                    movieCard.className = 'movie-card';
-
-                    movieCard.innerHTML = `
-                        <div class="image-wrapper">
-                            <img src="${movie.image}" alt="${movie.title}" loading="lazy">
-                            <div class="rating-badge">★ ${movie.rating || '4.5'}</div>
-                        </div>
-                        <div class="movie-info">
-                            <div>
-                                <div class="movie-title">${movie.title}</div>
-                                <div class="movie-category">${movie.category || 'Movie'}</div>
-                            </div>
-                            <a href="${movie.downloadUrl}" target="_blank" class="download-btn">ഡൗൺലോഡ്</a>
-                        </div>
-                    `;
-                    movieListContainer.appendChild(movieCard);
+                    if (m.isHero === true) {
+                        heroMovie = m;
+                    }
                 });
+                
+                allMovies.reverse(); 
+                renderHeroBanner(heroMovie);
+                displayMovies(allMovies);
             } else {
-                movieListContainer.innerHTML = '<div class="status-msg">സിനിമകൾ ഒന്നും ലഭ്യമാക്കിയിട്ടില്ല!</div>';
+                document.getElementById('movie-list').innerHTML = '<div class="status-msg">No movies available!</div>';
             }
         });
 
-        // അഡ്മിൻ പാസ്‌വേർഡ് വെരിഫിക്കേഷൻ
-        function checkAdminPassword() {
-            const password = prompt("Admin Password ടൈപ്പ് ചെയ്യുക:");
-            if (password === "123") {
-                alert("അഡ്മിൻ ലോഗിൻ വിജയകരമാണ്!");
-                document.getElementById('adminConsole').style.display = 'block';
-                window.scrollTo(0, 0);
-            } else if (password !== null) {
-                alert("തെറ്റായ പാസ്‌വേർഡ്!");
+        function renderHeroBanner(movie) {
+            const heroSection = document.getElementById('heroSection');
+            if (movie) {
+                heroSection.style.display = 'block';
+                heroSection.innerHTML = `
+                    <img src="${movie.image}" class="hero-bg" alt="Hero Poster">
+                    <div class="hero-overlay">
+                        <div class="hero-title">${movie.title}</div>
+                        <div class="hero-meta">★ ${movie.rating || '4.5'} | ${movie.category || 'Featured'}</div>
+                        <a href="${movie.downloadUrl}" target="_blank" class="hero-btn">Download Now</a>
+                    </div>
+                `;
+            } else {
+                heroSection.style.display = 'none';
             }
         }
 
-        // പുതിയ സിനിമ ഫയർബേസിലേക്ക് അപ്‌ലോഡ് ചെയ്യുന്ന ഫങ്ഷൻ
+        function displayMovies(moviesList) {
+            const movieListContainer = document.getElementById('movie-list');
+            movieListContainer.innerHTML = '';
+
+            if (moviesList.length === 0) {
+                movieListContainer.innerHTML = '<div class="status-msg">No movies found!</div>';
+                return;
+            }
+
+            moviesList.forEach((movie) => {
+                const movieCard = document.createElement('div');
+                movieCard.className = 'movie-card';
+                movieCard.innerHTML = `
+                    <div class="image-wrapper">
+                        <img src="${movie.image}" alt="${movie.title}" loading="lazy">
+                        <div class="rating-badge">★ ${movie.rating || '4.5'}</div>
+                    </div>
+                    <div class="movie-info">
+                        <div>
+                            <div class="movie-title">${movie.title}</div>
+                            <div class="movie-category">${movie.category || 'Movie'}</div>
+                        </div>
+                        <a href="${movie.downloadUrl}" target="_blank" class="download-btn">Download</a>
+                    </div>
+                `;
+                movieListContainer.appendChild(movieCard);
+            });
+        }
+
+        function searchMovies() {
+            const query = document.getElementById('searchBox').value.toLowerCase();
+            const filtered = allMovies.filter(movie => movie.title.toLowerCase().includes(query));
+            displayMovies(filtered);
+        }
+
+        function checkAdminPassword() {
+            const password = prompt("Enter Admin Password:");
+            if (password === "123") {
+                alert("Login successful!");
+                document.getElementById('adminConsole').style.display = 'block';
+                window.scrollTo(0, 0);
+            } else if (password !== null) {
+                alert("Incorrect password!");
+            }
+        }
+
         function uploadMovie() {
             const title = document.getElementById('movieTitle').value;
             const category = document.getElementById('movieCat').value;
             const rating = document.getElementById('movieRating').value;
             const image = document.getElementById('movieImg').value;
             const downloadUrl = document.getElementById('movieLink').value;
+            const isHero = document.getElementById('isHeroBanner').checked;
 
             if (!title || !image || !downloadUrl) {
-                alert("ദയവായി പ്രധാനപ്പെട്ട വിവരങ്ങൾ (Title, Image, Download Link) എല്ലാം പൂരിപ്പിക്കുക!");
+                alert("Please fill in all required fields!");
                 return;
             }
 
-            // ഫയർബേസിലേക്ക് ഡാറ്റ ഒരൊറ്റ ക്ലിക്കിൽ അപ്‌ലോഡ് ചെയ്യുന്നു
+            if (isHero) {
+                database.ref('movies').once('value', (snapshot) => {
+                    const data = snapshot.val();
+                    if (data) {
+                        Object.keys(data).forEach((key) => {
+                            if (data[key].isHero) {
+                                database.ref(`movies/${key}/isHero`).set(false);
+                            }
+                        });
+                    }
+                    saveToFirebase(title, category, rating, image, downloadUrl, true);
+                });
+            } else {
+                saveToFirebase(title, category, rating, image, downloadUrl, false);
+            }
+        }
+
+        function saveToFirebase(title, category, rating, image, downloadUrl, isHeroValue) {
             const newMovieRef = database.ref('movies').push();
             newMovieRef.set({
                 title: title,
                 category: category || "Movie",
                 rating: rating || "4.5",
                 image: image,
-                downloadUrl: downloadUrl
+                downloadUrl: downloadUrl,
+                isHero: isHeroValue,
+                timestamp: Date.now()
             }).then(() => {
-                alert("സിനിമ വിജയകരമായി അപ്‌ലോഡ് ചെയ്തു!");
-                // ഫോം ക്ലീൻ ചെയ്യുന്നു
+                alert("Movie uploaded successfully!");
                 document.getElementById('movieTitle').value = '';
                 document.getElementById('movieCat').value = '';
                 document.getElementById('movieRating').value = '';
                 document.getElementById('movieImg').value = '';
                 document.getElementById('movieLink').value = '';
-            }).catch((error) => {
-                alert("അപ്‌ലോഡ് പരാജയപ്പെട്ടു: " + error.message);
+                document.getElementById('isHeroBanner').checked = false;
             });
         }
     </script>
