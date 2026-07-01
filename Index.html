@@ -1,4 +1,4 @@
-<!ഡോക്ടയ്പെ html>
+<!DOCTYPE html>
 <html lang="ml">
 <head>
     <meta charset="UTF-8">
@@ -12,6 +12,7 @@
             --card-bg: #1a1a1a;
             --text-color: #ffffff;
             --text-muted: #aaaaaa;
+            --input-bg: #333333;
         }
 
         * {
@@ -32,6 +33,7 @@
             text-align: center;
             margin-bottom: 30px;
             padding: 10px 0;
+            position: relative;
         }
 
         header h1 {
@@ -50,6 +52,19 @@
             margin-top: 5px;
         }
 
+        /* Admin Login Trigger Button */
+        .admin-trigger {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: transparent;
+            color: #333;
+            border: none;
+            cursor: pointer;
+            font-size: 12px;
+        }
+
+        /* Movie Grid */
         .movie-container {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
@@ -137,11 +152,6 @@
             font-weight: 600;
             font-size: 13px;
             letter-spacing: 0.5px;
-            box-shadow: 0 4px 10px rgba(229, 9, 20, 0.3);
-        }
-
-        .download-btn:active {
-            background-color: #b20710;
         }
 
         .status-msg {
@@ -151,6 +161,68 @@
             font-size: 14px;
             padding: 40px 0;
         }
+
+        /* Admin Panel Drawer */
+        .admin-panel {
+            display: none;
+            max-width: 500px;
+            margin: 20px auto;
+            background-color: var(--card-bg);
+            padding: 20px;
+            border-radius: 12px;
+            border: 2px solid var(--primary-color);
+            box-shadow: 0 10px 25px rgba(229, 9, 20, 0.2);
+        }
+
+        .admin-panel h2 {
+            margin-bottom: 15px;
+            font-size: 20px;
+            color: var(--primary-color);
+            text-align: center;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 12px;
+            margin-bottom: 5px;
+            color: var(--text-muted);
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px;
+            background-color: var(--input-bg);
+            border: 1px solid #444;
+            border-radius: 8px;
+            color: white;
+            font-size: 14px;
+        }
+
+        .form-group input:focus {
+            border-color: var(--primary-color);
+            outline: none;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 12px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 14px;
+            margin-top: 10px;
+        }
+
+        .submit-btn:active {
+            background-color: #218838;
+        }
     </style>
 </head>
 <body>
@@ -158,17 +230,44 @@
     <header>
         <h1>24/7 <span>Loop</span></h1>
         <p>അൺലിമിറ്റഡ് മൂവി ഡൗൺലോഡ്സ് ഒറ്റ ക്ലിക്കിൽ</p>
+        <button class="admin-trigger" onclick="checkAdminPassword()">⚫</button>
     </header>
 
+    <div class="admin-panel" id="adminConsole">
+        <h2>Admin Movie Uploader</h2>
+        <div class="form-group">
+            <label>സിനിമയുടെ പേര് (Movie Title)</label>
+            <input type="text" id="movieTitle" placeholder="Eg: Premalu">
+        </div>
+        <div class="form-group">
+            <label>കാറ്റഗറി (Category)</label>
+            <input type="text" id="movieCat" placeholder="Eg: Comedy | Romance">
+        </div>
+        <div class="form-group">
+            <label>റേറ്റിംഗ് (Rating)</label>
+            <input type="text" id="movieRating" placeholder="Eg: 4.5">
+        </div>
+        <div class="form-group">
+            <label>പോസ്റ്റർ ലിങ്ക് (Poster Image URL)</label>
+            <input type="text" id="movieImg" placeholder="https://i.postimg.cc/...">
+        </div>
+        <div class="form-group">
+            <label>ഡൗൺലോഡ് ലിങ്ക് (Download URL)</label>
+            <input type="text" id="movieLink" placeholder="Google Drive / Terabox Link">
+        </div>
+        <button class="submit-btn" onclick="uploadMovie()">Upload Movie</button>
+    </div>
+
+    <hr style="border: 0; height: 1px; background: #333; margin: 20px 0;">
+
     <div class="movie-container" id="movie-list">
-        <div class="status-msg">സിനിമകൾ ലോഡ് ചെയ്യുന്നു...</div>
+        <div class="status-msg">സിнимаകൾ ലോഡ് ചെയ്യുന്നു...</div>
     </div>
 
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
 
     <script>
-        // നിങ്ങളുടെ ഫയർബേസ് വിവരങ്ങൾ
         const firebaseConfig = {
             apiKey: "AIzaSyAthFMO8zGT5BtiOkh4zkc71jL06LR_F9c",
             authDomain: "a-one-chat-19ad6.firebaseapp.com",
@@ -185,6 +284,7 @@
 
         const movieListContainer = document.getElementById('movie-list');
 
+        // ഫയർബേസിൽ നിന്ന് സിനിമകൾ എടുത്തു കാണിക്കുന്നു
         database.ref('movies').on('value', (snapshot) => {
             movieListContainer.innerHTML = ''; 
             const movies = snapshot.val();
@@ -196,31 +296,71 @@
                     const movieCard = document.createElement('div');
                     movieCard.className = 'movie-card';
 
-                    const rating = movie.rating || "4.5";
-                    const category = movie.category || "Movie | Action";
-
                     movieCard.innerHTML = `
                         <div class="image-wrapper">
                             <img src="${movie.image}" alt="${movie.title}" loading="lazy">
-                            <div class="rating-badge">★ ${rating}</div>
+                            <div class="rating-badge">★ ${movie.rating || '4.5'}</div>
                         </div>
                         <div class="movie-info">
                             <div>
                                 <div class="movie-title">${movie.title}</div>
-                                <div class="movie-category">${category}</div>
+                                <div class="movie-category">${movie.category || 'Movie'}</div>
                             </div>
                             <a href="${movie.downloadUrl}" target="_blank" class="download-btn">ഡൗൺലോഡ്</a>
                         </div>
                     `;
-
                     movieListContainer.appendChild(movieCard);
                 });
             } else {
                 movieListContainer.innerHTML = '<div class="status-msg">സിനിമകൾ ഒന്നും ലഭ്യമാക്കിയിട്ടില്ല!</div>';
             }
-        }, (error) => {
-            movieListContainer.innerHTML = '<div class="status-msg">ഡാറ്റ ലോഡ് ചെയ്യുന്നതിൽ പരാജയപ്പെട്ടു.</div>';
         });
+
+        // അഡ്മിൻ പാസ്‌വേർഡ് വെരിഫിക്കേഷൻ
+        function checkAdminPassword() {
+            const password = prompt("Admin Password ടൈപ്പ് ചെയ്യുക:");
+            if (password === "123") {
+                alert("അഡ്മിൻ ലോഗിൻ വിജയകരമാണ്!");
+                document.getElementById('adminConsole').style.display = 'block';
+                window.scrollTo(0, 0);
+            } else if (password !== null) {
+                alert("തെറ്റായ പാസ്‌വേർഡ്!");
+            }
+        }
+
+        // പുതിയ സിനിമ ഫയർബേസിലേക്ക് അപ്‌ലോഡ് ചെയ്യുന്ന ഫങ്ഷൻ
+        function uploadMovie() {
+            const title = document.getElementById('movieTitle').value;
+            const category = document.getElementById('movieCat').value;
+            const rating = document.getElementById('movieRating').value;
+            const image = document.getElementById('movieImg').value;
+            const downloadUrl = document.getElementById('movieLink').value;
+
+            if (!title || !image || !downloadUrl) {
+                alert("ദയവായി പ്രധാനപ്പെട്ട വിവരങ്ങൾ (Title, Image, Download Link) എല്ലാം പൂരിപ്പിക്കുക!");
+                return;
+            }
+
+            // ഫയർബേസിലേക്ക് ഡാറ്റ ഒരൊറ്റ ക്ലിക്കിൽ അപ്‌ലോഡ് ചെയ്യുന്നു
+            const newMovieRef = database.ref('movies').push();
+            newMovieRef.set({
+                title: title,
+                category: category || "Movie",
+                rating: rating || "4.5",
+                image: image,
+                downloadUrl: downloadUrl
+            }).then(() => {
+                alert("സിനിമ വിജയകരമായി അപ്‌ലോഡ് ചെയ്തു!");
+                // ഫോം ക്ലീൻ ചെയ്യുന്നു
+                document.getElementById('movieTitle').value = '';
+                document.getElementById('movieCat').value = '';
+                document.getElementById('movieRating').value = '';
+                document.getElementById('movieImg').value = '';
+                document.getElementById('movieLink').value = '';
+            }).catch((error) => {
+                alert("അപ്‌ലോഡ് പരാജയപ്പെട്ടു: " + error.message);
+            });
+        }
     </script>
 </body>
 </html>
