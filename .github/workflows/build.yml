@@ -10,10 +10,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Checkout Source Code
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4  # v4 ലേക്ക് അപ്ഡേറ്റ് ചെയ്തു
 
     - name: Set up Node.js
-      uses: actions/setup-node@v3
+      uses: actions/setup-node@v4  # v4 ലേക്ക് അപ്ഡേറ്റ് ചെയ്തു
       with:
         node-version: 18
 
@@ -31,7 +31,6 @@ jobs:
         rm -rf loopapp/www/*
         cp index.html loopapp/www/
 
-    # ലോഗോ ആപ്പിലേക്ക് സെറ്റ് ചെയ്യുന്ന ഭാഗം (പുതിയത്)
     - name: Set App Icon
       run: |
         if [ -f "logo.png" ]; then
@@ -40,10 +39,10 @@ jobs:
         fi
 
     - name: Setup Java JDK
-      uses: actions/setup-java@v3
+      uses: actions/setup-java@v4  # v4 ലേക്ക് അപ്ഡേറ്റ് ചെയ്തു
       with:
         distribution: 'temurin'
-        java-version: '11'
+        java-version: '17'  # പുതിയ ആൻഡ്രോയിഡ് ബിൽഡിന് അനുയോജ്യമായ ജാവ വേർഷൻ
 
     - name: Build Android APK
       run: |
@@ -51,7 +50,7 @@ jobs:
         cordova build android --release
 
     - name: Upload APK Artifact
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4  # എറർ വന്നിരുന്ന ഭാഗം ഇവിടെ v4 ആക്കി മാറ്റി
       with:
         name: 247-Loop-APK
         path: loopapp/platforms/android/app/build/outputs/apk/release/app-release-unsigned.apk
