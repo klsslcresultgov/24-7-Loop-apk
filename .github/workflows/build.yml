@@ -10,10 +10,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Checkout Source Code
-      uses: actions/checkout@v4  # v4 ലേക്ക് അപ്ഡേറ്റ് ചെയ്തു
+      uses: actions/checkout@v4
 
     - name: Set up Node.js
-      uses: actions/setup-node@v4  # v4 ലേക്ക് അപ്ഡേറ്റ് ചെയ്തു
+      uses: actions/setup-node@v4
       with:
         node-version: 18
 
@@ -26,23 +26,35 @@ jobs:
         cd loopapp
         cordova platform add android --no-telemetry
 
-    - name: Copy Website Code to Cordova
+    # ഇവിടെ നമ്മൾ ഫയൽ ഉണ്ടോ എന്ന് ഉറപ്പ് വരുത്തിയ ശേഷമേ കോപ്പി ചെയ്യൂ
+    # ഇൻഡെക്സ് ഫയൽ ക്യാപിറ്റൽ ലെറ്ററിലാണെങ്കിൽ പോലും ഇത് കൃത്യമായി എടുക്കും
+    <span class="katex"><text>name: Copy Website Code to Cordova
       run: |
         rm -rf loopapp/www/*
-        cp index.html loopapp/www/
+        if [ -f "index.html" ]; then
+          cp index.html loopapp/www/
+        elif [ -f "Index.html" ]; then
+          cp Index.html loopapp/www/index.html
+        else
+          echo "ERROR: index.html ഫയൽ കണ്ടെത്താൻ കഴിഞ്ഞില്ല!"
+          exit 1
+        fi
 
-    - name: Set App Icon
+    </text></span>name: Set App Icon
       run: |
         if [ -f "logo.png" ]; then
           cp logo.png loopapp/www/icon.png
           sed -i '/<\/widget>/i \    <icon src="www/icon.png" />' loopapp/config.xml
+        elif [ -f "Logo.png" ]; then
+          cp Logo.png loopapp/www/icon.png
+          sed -i '/<\/widget>/i \    <icon src="www/icon.png" />' loopapp/config.xml
         fi
 
     - name: Setup Java JDK
-      uses: actions/setup-java@v4  # v4 ലേക്ക് അപ്ഡേറ്റ് ചെയ്തു
+      uses: actions/setup-java@v4
       with:
         distribution: 'temurin'
-        java-version: '17'  # പുതിയ ആൻഡ്രോയിഡ് ബിൽഡിന് അനുയോജ്യമായ ജാവ വേർഷൻ
+        java-version: '17'
 
     - name: Build Android APK
       run: |
@@ -50,7 +62,7 @@ jobs:
         cordova build android --release
 
     - name: Upload APK Artifact
-      uses: actions/upload-artifact@v4  # എറർ വന്നിരുന്ന ഭാഗം ഇവിടെ v4 ആക്കി മാറ്റി
+      uses: actions/upload-artifact@v4
       with:
         name: 247-Loop-APK
         path: loopapp/platforms/android/app/build/outputs/apk/release/app-release-unsigned.apk
