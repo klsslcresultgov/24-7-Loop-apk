@@ -1,0 +1,57 @@
+name: Build Mobile App APK
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout Source Code
+      uses: actions/checkout@v3
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: 18
+
+    - name: Install Cordova
+      run: npm install -g cordova
+
+    - name: Create Cordova Project
+      run: |
+        cordova create loopapp com.twentyfourseven.loop "24/7 Loop"
+        cd loopapp
+        cordova platform add android --no-telemetry
+
+    - name: Copy Website Code to Cordova
+      run: |
+        rm -rf loopapp/www/*
+        cp index.html loopapp/www/
+
+    # ലോഗോ ആപ്പിലേക്ക് സെറ്റ് ചെയ്യുന്ന ഭാഗം (പുതിയത്)
+    - name: Set App Icon
+      run: |
+        if [ -f "logo.png" ]; then
+          cp logo.png loopapp/www/icon.png
+          sed -i '/<\/widget>/i \    <icon src="www/icon.png" />' loopapp/config.xml
+        fi
+
+    - name: Setup Java JDK
+      uses: actions/setup-java@v3
+      with:
+        distribution: 'temurin'
+        java-version: '11'
+
+    - name: Build Android APK
+      run: |
+        cd loopapp
+        cordova build android --release
+
+    - name: Upload APK Artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: 247-Loop-APK
+        path: loopapp/platforms/android/app/build/outputs/apk/release/app-release-unsigned.apk
