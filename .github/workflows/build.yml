@@ -15,7 +15,7 @@ jobs:
     - name: Set up Node.js
       uses: actions/setup-node@v4
       with:
-        node-version: 20  # നോഡ് വേർഷൻ അപ്ഡേറ്റ് ചെയ്തു (ആദ്യത്തെ വാണിംഗ് മാറാൻ)
+        node-version: 20
 
     - name: Install Cordova
       run: npm install -g cordova
@@ -59,9 +59,14 @@ jobs:
         cd loopapp
         cordova build android --release
 
+    # ബിൽഡ് ചെയ്ത APK ഫയൽ എളുപ്പത്തിൽ കിട്ടാൻ വേണ്ടി മെയിൻ റൂട്ടിലേക്ക് കോപ്പി ചെയ്യുന്നു
+    - name: Copy APK to Root
+      run: |
+        mkdir -p output-apk
+        find loopapp/platforms/android/ -name "*.apk" -exec cp {} output-apk/ \;
+
     - name: Upload APK Artifact
       uses: actions/upload-artifact@v4
       with:
         name: 247-Loop-APK
-        # പാത്ത് കൃത്യമായി മാറ്റിയിട്ടുണ്ട്, ഇനി ഫയൽ മിസ്സിംഗ് വാണിംഗ് വരില്ല
-        path: "**/platforms/android/app/build/outputs/apk/**/*.apk"
+        path: output-apk/
