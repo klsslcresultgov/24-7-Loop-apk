@@ -17,10 +17,11 @@ jobs:
       with:
         node-version: 20
 
+    # ഇവിടെ നമ്മൾ @capacitor/android കൂടി ചേർത്ത് ഇൻസ്റ്റാൾ ചെയ്യുന്നു
     - name: Install Dependencies
       run: |
         npm init -y
-        npm install @capacitor/core @capacitor/cli
+        npm install @capacitor/core @capacitor/cli @capacitor/android
 
     - name: Initialize Capacitor Project
       run: |
