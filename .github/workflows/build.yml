@@ -26,9 +26,7 @@ jobs:
         cd loopapp
         cordova platform add android --no-telemetry
 
-    # ഇവിടെ നമ്മൾ ഫയൽ ഉണ്ടോ എന്ന് ഉറപ്പ് വരുത്തിയ ശേഷമേ കോപ്പി ചെയ്യൂ
-    # ഇൻഡെക്സ് ഫയൽ ക്യാപിറ്റൽ ലെറ്ററിലാണെങ്കിൽ പോലും ഇത് കൃത്യമായി എടുക്കും
-    <span class="katex"><text>name: Copy Website Code to Cordova
+    - name: Copy Website Code to Cordova
       run: |
         rm -rf loopapp/www/*
         if [ -f "index.html" ]; then
@@ -40,7 +38,7 @@ jobs:
           exit 1
         fi
 
-    </text></span>name: Set App Icon
+    - name: Set App Icon
       run: |
         if [ -f "logo.png" ]; then
           cp logo.png loopapp/www/icon.png
