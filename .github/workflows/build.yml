@@ -17,7 +17,6 @@ jobs:
       with:
         node-version: 20
 
-    # ഇവിടെ നമ്മൾ @capacitor/android കൂടി ചേർത്ത് ഇൻസ്റ്റാൾ ചെയ്യുന്നു
     - name: Install Dependencies
       run: |
         npm init -y
@@ -40,7 +39,7 @@ jobs:
       uses: actions/setup-java@v4
       with:
         distribution: 'temurin'
-        java-version: '17'
+        java-version: '21'  # എറർ വന്നിരുന്ന ഭാഗം ഇവിടെ Java 21 ആക്കി മാറ്റി
 
     - name: Build Android App with Gradle
       run: |
