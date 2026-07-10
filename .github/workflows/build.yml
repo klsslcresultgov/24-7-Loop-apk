@@ -35,12 +35,12 @@ jobs:
         elif [ -f "Index.html" ]; then
           cp Index.html www/index.html
         else
-          echo "<h1>24/7 Loop</h1>" > www/index.html
+          echo "<h1>Cafe Bill</h1>" > www/index.html
         fi
 
     - name: Configure Capacitor
       run: |
-        npx cap init "247 Loop" "com.twentyfourseven.loop" --web-dir=www
+        npx cap init "Cafe Bill" "com.risham.cafebill" --web-dir=www
         npx cap add android
 
     - name: Setup Java JDK
@@ -72,13 +72,13 @@ jobs:
     - name: Copy APK to Output Folder
       run: |
         mkdir -p output-apk
-        cp android/app/build/outputs/apk/debug/app-debug.apk output-apk/247-Loop.apk
+        cp android/app/build/outputs/apk/debug/app-debug.apk output-apk/Cafe-Bill.apk
 
     - name: Upload APK Artifact
       uses: actions/upload-artifact@v4
       with:
         name: 247-Loop-APK
-        path: output-apk/247-Loop.apk
+        path: output-apk/Cafe Bill.apk
 
     - name: Setup Java JDK
       uses: actions/setup-java@v4
@@ -95,13 +95,13 @@ jobs:
     - name: Copy APK to Output Folder
       run: |
         mkdir -p output-apk
-        cp android/app/build/outputs/apk/debug/app-debug.apk output-apk/247-Loop.apk
+        cp android/app/build/outputs/apk/debug/app-debug.apk output-apk/Cafe-Bill.apk
 
     - name: Upload APK Artifact
       uses: actions/upload-artifact@v4
       with:
-        name: 247-Loop-APK
-        path: output-apk/247-Loop.apk
+        name: Cafe-Bill-APK
+        path: output-apk/Cafe Bill.apk
 
     - name: Setup Java JDK
       uses: actions/setup-java@v4
@@ -118,10 +118,10 @@ jobs:
     - name: Copy APK to Output Folder
       run: |
         mkdir -p output-apk
-        cp android/app/build/outputs/apk/debug/app-debug.apk output-apk/247-Loop.apk
+        cp android/app/build/outputs/apk/debug/app-debug.apk output-apk/Cafe Bill.apk
 
     - name: Upload APK Artifact
       uses: actions/upload-artifact@v4
       with:
-        name: 247-Loop-APK
-        path: output-apk/247-Loop.apk
+        name: Cafe-Bill-APK
+        path: output-apk/Cafe-Bill.apk
