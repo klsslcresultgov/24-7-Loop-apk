@@ -8,120 +8,78 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+
     steps:
-    - name: Checkout Source Code
-      uses: actions/checkout@v4
+      - name: Checkout Source Code
+        uses: actions/checkout@v4
 
-    - name: Set up Node.js
-      uses: actions/setup-node@v4
-      with:
-        node-version: 20
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
 
-    # പഴയ തടസ്സങ്ങൾ ഒഴിവാക്കാൻ മുൻപത്തെ എല്ലാ ഫയലുകളും ക്ലീൻ ചെയ്യുന്നു
-    - name: Clean Previous Builds
-      run: |
-        rm -rf loopapp android ios node_modules package-lock.json capacitor.config.json www output-apk
+      - name: Setup Java JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
 
-    - name: Install Dependencies
-      run: |
-        npm init -y
-        npm install @capacitor/core@5 @capacitor/cli@5 @capacitor/android@5
+      - name: Install Capacitor
+        run: |
+          npm init -y
+          npm install @capacitor/core@5 @capacitor/cli@5 @capacitor/android@5
 
-    - name: Initialize Web Directory
-      run: |
-        mkdir -p www
-        if [ -f "index.html" ]; then
-          cp index.html www/
-        elif [ -f "Index.html" ]; then
-          cp Index.html www/index.html
-        else
-          echo "<h1>Cafe Bill</h1>" > www/index.html
-        fi
+      - name: Create Web Directory
+        run: |
+          mkdir -p www
 
-    - name: Configure Capacitor
-      run: |
-        npx cap init "Cafe Bill" "com.risham.cafebill" --web-dir=www
-        npx cap add android
+          if [ -f "index.html" ]; then
+            cp index.html www/index.html
+          elif [ -f "Index.html" ]; then
+            cp Index.html www/index.html
+          else
+            echo "<!DOCTYPE html><html><body><h1>Cafe Bill</h1></body></html>" > www/index.html
+          fi
 
-    - name: Setup Java JDK
-      uses: actions/setup-java@v4
-      with:
-        distribution: 'temurin'
-        java-version: '17'
+      - name: Initialize Capacitor
+        run: |
+          npx cap init "Cafe Bill" "com.risham.cafebill" --web-dir=www
+          npx cap add android
 
-    # നിങ്ങളുടെ logo.png ആൻഡ്രോയിഡ് ആപ്പിന്റെ ഐക്കൺ ആയി മാറ്റുന്നു
-    - name: Set App Icon (logo.png)
-      run: |
-        if [ -f "logo.png" ]; then
-          npm install -g @capacitor/assets
-          mkdir -p assets
-          cp logo.png assets/icon-only.png
-          cp logo.png assets/icon-foreground.png
-          cp logo.png assets/icon-background.png
-          cp logo.png assets/splash.png
-          cp logo.png assets/splash-dark.png
-          npx capacitor-assets generate --android
-        fi
+      - name: Generate App Icon
+        run: |
+          if [ -f "logo.png" ]; then
+            npm install -g @capacitor/assets
+            mkdir -p assets
 
-    - name: Build Android App with Gradle
-      run: |
-        cd android
-        chmod +x gradlew
-        ./gradlew assembleDebug
+            cp logo.png assets/icon-only.png
+            cp logo.png assets/icon-foreground.png
+            cp logo.png assets/icon-background.png
+            cp logo.png assets/splash.png
+            cp logo.png assets/splash-dark.png
 
-    - name: Copy APK to Output Folder
-      run: |
-        mkdir -p output-apk
-        cp android/app/build/outputs/apk/debug/app-debug.apk output-apk/Cafe-Bill.apk
+            npx capacitor-assets generate --android
+          else
+            echo "logo.png not found. Skipping icon generation."
+          fi
 
-    - name: Upload APK Artifact
-      uses: actions/upload-artifact@v4
-      with:
-        name: 247-Loop-APK
-        path: output-apk/Cafe Bill.apk
+      - name: Sync Capacitor
+        run: |
+          npx cap sync android
 
-    - name: Setup Java JDK
-      uses: actions/setup-java@v4
-      with:
-        distribution: 'temurin'
-        java-version: '17' # ആൻഡ്രോയിഡ് ബിൽഡിന് ഏറ്റവും അനുയോജ്യമായ ജാവ വേർഷനിലേക്ക് മാറ്റി
+      - name: Build Debug APK
+        run: |
+          cd android
+          chmod +x gradlew
+          ./gradlew assembleDebug
 
-    - name: Build Android App with Gradle
-      run: |
-        cd android
-        chmod +x gradlew
-        ./gradlew assembleDebug
+      - name: Copy APK
+        run: |
+          mkdir -p output-apk
+          cp android/app/build/outputs/apk/debug/app-debug.apk output-apk/Cafe-Bill.apk
 
-    - name: Copy APK to Output Folder
-      run: |
-        mkdir -p output-apk
-        cp android/app/build/outputs/apk/debug/app-debug.apk output-apk/Cafe-Bill.apk
-
-    - name: Upload APK Artifact
-      uses: actions/upload-artifact@v4
-      with:
-        name: Cafe-Bill-APK
-        path: output-apk/Cafe Bill.apk
-
-    - name: Setup Java JDK
-      uses: actions/setup-java@v4
-      with:
-        distribution: 'temurin'
-        java-version: '21'  # എറർ വന്നിരുന്ന ഭാഗം ഇവിടെ Java 21 ആക്കി മാറ്റി
-
-    - name: Build Android App with Gradle
-      run: |
-        cd android
-        chmod +x gradlew
-        ./gradlew assembleDebug
-
-    - name: Copy APK to Output Folder
-      run: |
-        mkdir -p output-apk
-        cp android/app/build/outputs/apk/debug/app-debug.apk output-apk/Cafe Bill.apk
-
-    - name: Upload APK Artifact
-      uses: actions/upload-artifact@v4
-      with:
-        name: Cafe-Bill-APK
-        path: output-apk/Cafe-Bill.apk
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: Cafe-Bill-APK
+          path: output-apk/Cafe-Bill.apk
